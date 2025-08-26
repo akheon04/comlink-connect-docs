@@ -1038,6 +1038,636 @@ export const apiGroups: ApiGroup[] = [
     ]
   },
   {
+    name: 'OrdemServico',
+    endpoints: [
+      {
+        id: 'enviar-ordem-servico',
+        method: 'POST',
+        path: '/ordemservico/enviar',
+        summary: 'Publica ordem de serviço',
+        tags: ['OrdemServico'],
+        requestBody: {
+          description: 'Ordem de serviço a ser publicada',
+          content: {
+            'application/json': {
+              schema: { type: 'object' },
+              example: {
+                "Cabecalho": {
+                  "NumeroComlink": 0,
+                  "NumeroOrdemServico": "string",
+                  "Sequencia": 0,
+                  "CNPJ": "string",
+                  "Empresa": "string",
+                  "DataGeracao": "2025-08-26T11:36:00.168Z",
+                  "Validade": 0,
+                  "Urgencia": "string",
+                  "NomeComprador": "string",
+                  "EmailComprador": "string",
+                  "NomeSolicitante": "string",
+                  "LocalRetirada": "string",
+                  "DataEntrada": "2025-08-26T11:36:00.168Z",
+                  "Observacao": "string",
+                  "Origem": "string"
+                },
+                "Prestador": {
+                  "NumeroComlink": 0,
+                  "CodigoPrestador": 0,
+                  "Observacao": "string",
+                  "NumeroControle": "string",
+                  "DocumentoPrestador": "string"
+                },
+                "CadastroPrestador": {
+                  "NumeroComlink": 0,
+                  "CodigoFornecedor": 0,
+                  "DocumentoFornecedor": "string",
+                  "NomeRazaoSocial": "string",
+                  "NomeFantasia": "string"
+                },
+                "Operacoes": [
+                  {
+                    "NumeroComlink": 0,
+                    "NumeroItem": 0,
+                    "Descricao": "string",
+                    "Quantidade": 0,
+                    "ValorNotaFiscal": 0,
+                    "CodigoEquipamento": "string"
+                  }
+                ],
+                "Atividades": [
+                  {
+                    "NumeroComlink": 0,
+                    "NumeroItemOperacao": 0,
+                    "NumeroItem": 0,
+                    "Descricao": "string",
+                    "NumeroRequisicaoServico": 0
+                  }
+                ]
+              }
+            }
+          }
+        },
+        responses: {
+          '200': { description: 'OK' },
+          '201': { description: 'Created' },
+          '400': { description: 'Bad Request' },
+          '401': { description: 'Unauthorized' },
+          '422': { description: 'Unprocessable Content' },
+          '500': { description: 'Internal Server Error' }
+        }
+      },
+      {
+        id: 'obter-ordens-finalizadas',
+        method: 'GET',
+        path: '/ordemservico/retorno/ordens/{origem}',
+        summary: 'Retorna lista de ordens de serviço finalizadas para criação de pedidos',
+        tags: ['OrdemServico'],
+        parameters: [
+          {
+            name: 'origem',
+            in: 'path',
+            description: 'Origem',
+            required: true,
+            schema: { type: 'string' }
+          }
+        ],
+        responses: {
+          '200': {
+            description: 'OK',
+            content: {
+              'application/json': {
+                schema: { type: 'array', items: { type: 'object' } },
+                example: [
+                  {
+                    "NumeroComlink": 0,
+                    "NumeroOrdemServico": "string",
+                    "SequenciaOrdemServico": 0,
+                    "Origem": "string"
+                  }
+                ]
+              }
+            }
+          },
+          '204': { description: 'No Content' },
+          '401': { description: 'Unauthorized' },
+          '500': { description: 'Internal Server Error' }
+        }
+      },
+      {
+        id: 'obter-dados-negociacao-ordem',
+        method: 'GET',
+        path: '/ordemservico/retorno/{ordemServico}',
+        summary: 'Retorna dados sobre a negociação (respostas) da ordem de serviço',
+        tags: ['OrdemServico'],
+        parameters: [
+          {
+            name: 'ordemServico',
+            in: 'path',
+            description: 'Número da ordem de serviço Comlink',
+            required: true,
+            schema: { type: 'integer', format: 'int32' }
+          }
+        ],
+        responses: {
+          '200': { description: 'OK' },
+          '400': { description: 'Bad Request' },
+          '401': { description: 'Unauthorized' },
+          '500': { description: 'Internal Server Error' }
+        }
+      },
+      {
+        id: 'confirma-processamento-ordem',
+        method: 'PUT',
+        path: '/ordemservico/retorno/confirmaprocessamento/{ordemServico}',
+        summary: 'Confirma o processamento sobre os dados de retorno da ordem de serviço',
+        tags: ['OrdemServico'],
+        parameters: [
+          {
+            name: 'ordemServico',
+            in: 'path',
+            description: 'Número da ordem de serviço Comlink',
+            required: true,
+            schema: { type: 'integer', format: 'int32' }
+          }
+        ],
+        responses: {
+          '200': { description: 'OK' },
+          '400': { description: 'Bad Request' },
+          '401': { description: 'Unauthorized' },
+          '404': { description: 'Not Found' },
+          '500': { description: 'Internal Server Error' }
+        }
+      },
+      {
+        id: 'gravar-mensagem-ordem',
+        method: 'POST',
+        path: '/ordemservico/retorno/mensagem',
+        summary: 'Grava mensagens no portal B2B Comlink',
+        tags: ['OrdemServico'],
+        requestBody: {
+          description: 'Mensagem',
+          content: {
+            'application/json': {
+              schema: { type: 'object' },
+              example: {
+                "NumeroComlink": 0,
+                "NumeroOrdemServico": "string",
+                "Mensagem": "string",
+                "Erro": true
+              }
+            }
+          }
+        },
+        responses: {
+          '200': { description: 'OK' },
+          '400': { description: 'Bad Request' },
+          '401': { description: 'Unauthorized' },
+          '404': { description: 'Not Found' },
+          '500': { description: 'Internal Server Error' }
+        }
+      },
+      {
+        id: 'obter-ordens-canceladas',
+        method: 'GET',
+        path: '/ordemservico/retorno/canceladas/{origem}',
+        summary: 'Retorna lista de ordens de serviço canceladas no portal Comlink',
+        tags: ['OrdemServico'],
+        parameters: [
+          {
+            name: 'origem',
+            in: 'path',
+            description: 'Origem',
+            required: true,
+            schema: { type: 'string' }
+          }
+        ],
+        responses: {
+          '200': {
+            description: 'OK',
+            content: {
+              'application/json': {
+                schema: { type: 'array', items: { type: 'object' } },
+                example: [
+                  {
+                    "NumeroComlink": 0,
+                    "NumeroOrdemServico": "string",
+                    "SequenciaOrdemServico": 0,
+                    "Observacao": "string",
+                    "Origem": "string"
+                  }
+                ]
+              }
+            }
+          },
+          '204': { description: 'No Content' },
+          '401': { description: 'Unauthorized' },
+          '500': { description: 'Internal Server Error' }
+        }
+      },
+      {
+        id: 'confirma-cancelamento-ordem',
+        method: 'PUT',
+        path: '/ordemservico/retorno/confirmacancelamento/{ordemServico}',
+        summary: 'Confirma o cancelamento da ordem de serviço',
+        tags: ['OrdemServico'],
+        parameters: [
+          {
+            name: 'ordemServico',
+            in: 'path',
+            description: 'Número da ordem Comlink',
+            required: true,
+            schema: { type: 'integer', format: 'int32' }
+          }
+        ],
+        responses: {
+          '200': { description: 'OK' },
+          '400': { description: 'Bad Request' },
+          '401': { description: 'Unauthorized' },
+          '404': { description: 'Not Found' },
+          '500': { description: 'Internal Server Error' }
+        }
+      }
+    ]
+  },
+  {
+    name: 'ImpostoAgregado',
+    endpoints: [
+      {
+        id: 'cadastrar-impostos',
+        method: 'POST',
+        path: '/imposto/carga',
+        summary: 'Realiza o cadastro dos códigos de imposto agregados',
+        tags: ['ImpostoAgregado'],
+        requestBody: {
+          description: 'Dados dos impostos agregados',
+          content: {
+            'application/json': {
+              schema: { type: 'array', items: { type: 'object' } },
+              example: [
+                {
+                  "CodigoCliente": "string",
+                  "Descricao": "string",
+                  "UsoMaterial": "string",
+                  "Padrao": true,
+                  "Ativo": true
+                }
+              ]
+            }
+          }
+        },
+        responses: {
+          '201': { description: 'Created' },
+          '400': { description: 'Bad Request' },
+          '401': { description: 'Unauthorized' },
+          '422': { description: 'Unprocessable Content' },
+          '500': { description: 'Internal Server Error' }
+        }
+      },
+      {
+        id: 'obter-impostos',
+        method: 'GET',
+        path: '/imposto/obter/{codigoImpostoAgregado}',
+        summary: 'Retorna lista de códigos de imposto agregados cadastrados',
+        description: 'Se o código de imposto agregado não for informado, serão retornados todos os códigos de imposto agregados cadastrados.',
+        tags: ['ImpostoAgregado'],
+        parameters: [
+          {
+            name: 'codigoImpostoAgregado',
+            in: 'path',
+            description: 'Código de imposto agregado no cliente (não obrigatório)',
+            required: true,
+            schema: { type: 'string' }
+          }
+        ],
+        responses: {
+          '200': {
+            description: 'OK',
+            content: {
+              'application/json': {
+                schema: { type: 'array', items: { type: 'object' } },
+                example: [
+                  {
+                    "CodigoCliente": "string",
+                    "CodigoEmpresa": "string",
+                    "NomeRazaoSocial": "string",
+                    "NomeFantasia": "string",
+                    "CNPJ": "string",
+                    "Cidade": "string",
+                    "Estado": "st",
+                    "DDD": "st",
+                    "Telefone": "string",
+                    "Padrao": 0
+                  }
+                ]
+              }
+            }
+          },
+          '204': { description: 'No Content' },
+          '401': { description: 'Unauthorized' },
+          '500': { description: 'Internal Server Error' }
+        }
+      }
+    ]
+  },
+  {
+    name: 'Log',
+    endpoints: [
+      {
+        id: 'adicionar-log',
+        method: 'POST',
+        path: '/logs/adicionar',
+        summary: 'Adiciona o log de integração',
+        tags: ['Log'],
+        requestBody: {
+          description: 'Dados do log',
+          content: {
+            'application/json': {
+              schema: { type: 'array', items: { type: 'object' } },
+              example: [
+                {
+                  "NumeroDocumento": "string",
+                  "Descricao": "string",
+                  "Tipo": 0
+                }
+              ]
+            }
+          }
+        },
+        responses: {
+          '201': { description: 'Created' },
+          '400': { description: 'Bad Request' },
+          '401': { description: 'Unauthorized' },
+          '500': { description: 'Internal Server Error' }
+        }
+      },
+      {
+        id: 'obter-logs',
+        method: 'GET',
+        path: '/logs/obter',
+        summary: 'Obtém os logs de integração',
+        tags: ['Log'],
+        parameters: [
+          {
+            name: 'd',
+            in: 'query',
+            description: '(opcional) número de dias anteriores à data atual (inclusive)',
+            required: false,
+            schema: { type: 'integer', format: 'int32' }
+          },
+          {
+            name: 'tc',
+            in: 'query',
+            description: '(opcional) tipo do contexto do log (LogIntegracao.Tipo)',
+            required: false,
+            schema: { type: 'integer', format: 'int32' }
+          }
+        ],
+        responses: {
+          '200': {
+            description: 'OK',
+            content: {
+              'application/json': {
+                schema: { type: 'array', items: { type: 'string' } }
+              }
+            }
+          },
+          '204': { description: 'No Content' },
+          '401': { description: 'Unauthorized' },
+          '500': { description: 'Internal Server Error' }
+        }
+      },
+      {
+        id: 'obter-logs-paginado',
+        method: 'GET',
+        path: '/logs/obter/v2',
+        summary: 'Obtém os logs de integração de forma paginada',
+        tags: ['Log'],
+        parameters: [
+          {
+            name: 'tc',
+            in: 'query',
+            description: '(opcional) tipo do contexto do log (LogIntegracao.Tipo)',
+            required: false,
+            schema: { type: 'integer', format: 'int32' }
+          },
+          {
+            name: 'rp',
+            in: 'query',
+            description: '(opcional) número de registros por página',
+            required: false,
+            schema: { type: 'integer', format: 'int32' }
+          },
+          {
+            name: 'pg',
+            in: 'query',
+            description: '(opcional) número da página dos registros',
+            required: false,
+            schema: { type: 'integer', format: 'int32' }
+          }
+        ],
+        responses: {
+          '200': {
+            description: 'OK',
+            content: {
+              'application/json': {
+                schema: { type: 'array', items: { type: 'string' } }
+              }
+            }
+          },
+          '204': { description: 'No Content' },
+          '401': { description: 'Unauthorized' },
+          '500': { description: 'Internal Server Error' }
+        }
+      }
+    ]
+  },
+  {
+    name: 'Requisicao',
+    endpoints: [
+      {
+        id: 'enviar-requisicao',
+        method: 'POST',
+        path: '/requisicao/enviar',
+        summary: 'Publica requisição',
+        tags: ['Requisicao'],
+        requestBody: {
+          description: 'Requisição a ser publicada',
+          content: {
+            'application/json': {
+              schema: { type: 'object' },
+              example: {
+                "EmpNom": "string",
+                "ColigNom": "string",
+                "DivNom": "string",
+                "EmpDoc": "string",
+                "ColigDoc": "string",
+                "LocalEntrega": "string",
+                "Estoque": true,
+                "ObsCmp": "string",
+                "ObsForn": "string",
+                "NumeroCli": "string",
+                "ErpOrigem": "string",
+                "ObsReq": "string",
+                "Solicitante": "string",
+                "DataEmissao": "2025-08-26T11:38:20.067Z",
+                "DataLiberacao": "2025-08-26T11:38:20.067Z",
+                "TipoRequisicao": "string",
+                "Itens": [
+                  {
+                    "CodMatClk": 0,
+                    "CodMatCli": "string",
+                    "Quantidade": 0,
+                    "ObsCmp": "string",
+                    "ObsForn": "string",
+                    "Descricao": "string",
+                    "Embalagem": "string",
+                    "Unidade": "string",
+                    "Ncm": "string",
+                    "LocalEntrega": "string",
+                    "DataEntrega": "2025-08-26T11:38:20.067Z",
+                    "DataRemessa": "2025-08-26T11:38:20.067Z",
+                    "DataEmissao": "2025-08-26T11:38:20.067Z",
+                    "DataLiberacao": "2025-08-26T11:38:20.067Z"
+                  }
+                ],
+                "Anexos": [
+                  {
+                    "AnexoId": "string",
+                    "Arquivo": "string",
+                    "ArquivoBase64": "string",
+                    "Nome": "string",
+                    "Extensao": "string"
+                  }
+                ],
+                "TotalAnexo": 0,
+                "BloqErp": true
+              }
+            }
+          }
+        },
+        responses: {
+          '201': { description: 'Created' },
+          '400': { description: 'Bad Request' },
+          '401': { description: 'Unauthorized' },
+          '500': { description: 'Internal Server Error' }
+        }
+      },
+      {
+        id: 'inserir-anexos-requisicao',
+        method: 'POST',
+        path: '/requisicao/anexos/{numeroCliente}',
+        summary: 'Inserir anexos da requisição de forma assíncrona',
+        tags: ['Requisicao'],
+        parameters: [
+          {
+            name: 'numeroCliente',
+            in: 'path',
+            description: 'Número da requisição do cliente',
+            required: true,
+            schema: { type: 'string' }
+          }
+        ],
+        responses: {
+          '201': { description: 'Created' },
+          '400': { description: 'Bad Request' },
+          '401': { description: 'Unauthorized' },
+          '500': { description: 'Internal Server Error' }
+        }
+      }
+    ]
+  },
+  {
+    name: 'Transportadora',
+    endpoints: [
+      {
+        id: 'cadastrar-transportadoras',
+        method: 'POST',
+        path: '/transportadora/carga',
+        summary: 'Realiza o cadastro das transportadoras',
+        tags: ['Transportadora'],
+        requestBody: {
+          description: 'Dados cadastrais das transportadoras',
+          content: {
+            'application/json': {
+              schema: { type: 'array', items: { type: 'object' } },
+              example: [
+                {
+                  "CodigoCliente": "string",
+                  "CodigoEmpresa": "string",
+                  "NomeRazaoSocial": "string",
+                  "NomeFantasia": "string",
+                  "CNPJ": "string",
+                  "Cidade": "string",
+                  "Estado": "st",
+                  "DDD": "st",
+                  "Telefone": "string",
+                  "Padrao": 0
+                }
+              ]
+            }
+          }
+        },
+        responses: {
+          '201': { description: 'Created' },
+          '400': { description: 'Bad Request' },
+          '401': { description: 'Unauthorized' },
+          '422': { description: 'Unprocessable Content' },
+          '500': { description: 'Internal Server Error' }
+        }
+      },
+      {
+        id: 'obter-transportadoras',
+        method: 'GET',
+        path: '/transportadora/obter/{codigo}/{codigoEmpresa}',
+        summary: 'Retorna lista de transportadoras cadastradas',
+        description: 'Se o código da transportadora não for informado, serão retornadas todas as transportadoras cadastradas.',
+        tags: ['Transportadora'],
+        parameters: [
+          {
+            name: 'codigo',
+            in: 'path',
+            description: 'Código da transportadora no cliente (não obrigatório)',
+            required: true,
+            schema: { type: 'string' }
+          },
+          {
+            name: 'codigoEmpresa',
+            in: 'path',
+            description: 'Código da empresa da transportadora no cliente (não obrigatório)',
+            required: true,
+            schema: { type: 'string' }
+          }
+        ],
+        responses: {
+          '200': {
+            description: 'OK',
+            content: {
+              'application/json': {
+                schema: { type: 'array', items: { type: 'object' } },
+                example: [
+                  {
+                    "CodigoCliente": "string",
+                    "CodigoEmpresa": "string",
+                    "NomeRazaoSocial": "string",
+                    "NomeFantasia": "string",
+                    "CNPJ": "string",
+                    "Cidade": "string",
+                    "Estado": "st",
+                    "DDD": "st",
+                    "Telefone": "string",
+                    "Padrao": 0
+                  }
+                ]
+              }
+            }
+          },
+          '204': { description: 'No Content' },
+          '401': { description: 'Unauthorized' },
+          '500': { description: 'Internal Server Error' }
+        }
+      }
+    ]
+  },
+  {
     name: 'Versao',
     endpoints: [
       {
