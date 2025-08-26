@@ -716,12 +716,181 @@ export const apiGroups: ApiGroup[] = [
         method: 'POST',
         path: '/pedido/enviar',
         summary: 'Publica o pedido',
+        description: 'Publica um novo pedido no sistema.',
         tags: ['Pedido'],
+        requestBody: {
+          description: 'pedido a ser publicado',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  Cabecalho: {
+                    type: 'object',
+                    properties: {
+                      ID: { type: 'number' },
+                      NumeroCliente: { type: 'string' },
+                      CodigoEmpresa: { type: 'number' },
+                      CodigoCliente: { type: 'number' },
+                      Sequencia: { type: 'number' },
+                      NomeEmpresa: { type: 'string' },
+                      CNPJ: { type: 'string' },
+                      InscricaoEstadual: { type: 'string' },
+                      TelefoneEmpresa: { type: 'string' },
+                      EnderecoEmpresa: { type: 'string' },
+                      CepEmpresa: { type: 'string' },
+                      CidadeEmpresa: { type: 'string' },
+                      EstadoEmpresa: { type: 'string' },
+                      BairroEmpresa: { type: 'string' },
+                      FaxEmpresa: { type: 'string' },
+                      EmailEmpresa: { type: 'string' },
+                      AlmoxarifaEmpresa: { type: 'string' },
+                      TipoPessoa: { type: 'string' },
+                      NomeComprador: { type: 'string' },
+                      EmailComprador: { type: 'string' },
+                      DataLiberacao: { type: 'string', format: 'date-time' },
+                      DataEmissao: { type: 'string', format: 'date-time' },
+                      DataEnvioWeb: { type: 'string', format: 'date-time' },
+                      DataEntrega: { type: 'string', format: 'date-time' },
+                      FormaRemessa: { type: 'string' },
+                      HorarioEntrega: { type: 'string' },
+                      Informativo: { type: 'string' },
+                      Aplicacao: { type: 'string' },
+                      Observacao: { type: 'string' },
+                      ObservacaoCobranca: { type: 'string' },
+                      Aprovador: { type: 'string' },
+                      CondicaoPagamento: { type: 'string' },
+                      LocalEntrega: { type: 'string' },
+                      Adiantamento: { type: 'string' },
+                      Status: { type: 'number' },
+                      DataAprovacao: { type: 'string', format: 'date-time' },
+                      ValorTotal: { type: 'number' },
+                      NomeVendedor: { type: 'string' },
+                      StatusWeb: { type: 'string' },
+                      Transportadora: { type: 'string' },
+                      CNPJTransportadora: { type: 'string' },
+                      NumeroCotacao: { type: 'string' },
+                      NumeroOrdem: { type: 'string' },
+                      NomeSolicitante: { type: 'string' },
+                      EmailSolicitante: { type: 'string' },
+                      ValorAcrescimo: { type: 'number' },
+                      ValorDesconto: { type: 'number' },
+                      ValorDespesa: { type: 'number' },
+                      ValorFrete: { type: 'number' },
+                      ValorIcms: { type: 'number' },
+                      ValorIpi: { type: 'number' },
+                      NumeroCotacaoComlink: { type: 'number' },
+                      NumeroPedidoComlink: { type: 'number' },
+                      TelefoneComprador: { type: 'string' },
+                      CodigoLoja: { type: 'string' },
+                      SimboloMoeda: { type: 'string' },
+                      ValorSaving: { type: 'number' },
+                      PercentualSaving: { type: 'number' }
+                    }
+                  },
+                  Itens: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        ID: { type: 'number' },
+                        NumeroItem: { type: 'number' },
+                        Sequencia: { type: 'number' },
+                        Quantidade: { type: 'number' },
+                        Unidade: { type: 'string' },
+                        CodigoItem: { type: 'string' },
+                        NumeroOrdem: { type: 'string' },
+                        DescricaoCompleta: { type: 'string' },
+                        ValorUnitario: { type: 'number' },
+                        ValorTotal: { type: 'number' },
+                        PercentualICMS: { type: 'number' },
+                        PercentualIPI: { type: 'number' },
+                        PercentualDesconto: { type: 'number' },
+                        PercentualST: { type: 'number' },
+                        DataEmissao: { type: 'string', format: 'date-time' },
+                        DataEntrega: { type: 'string', format: 'date-time' },
+                        PrazoEntrega: { type: 'string' },
+                        FormaRemessa: { type: 'string' },
+                        Transportadora: { type: 'string' },
+                        HorarioEntrega: { type: 'string' },
+                        Informativo: { type: 'string' },
+                        Aplicacao: { type: 'string' },
+                        Observacao: { type: 'string' },
+                        ObservacaoCobranca: { type: 'string' },
+                        Aprovador: { type: 'string' },
+                        CondicaoPagamento: { type: 'string' },
+                        Status: { type: 'number' },
+                        ValorDesconto: { type: 'number' },
+                        ValorST: { type: 'number' },
+                        Marca: { type: 'string' }
+                      }
+                    }
+                  },
+                  Fornecedor: {
+                    type: 'object',
+                    properties: {
+                      ID: { type: 'number' },
+                      CodigoComlink: { type: 'number' },
+                      DocumentoFornecedor: { type: 'string' },
+                      Inscricao: { type: 'string' },
+                      TipoPessoa: { type: 'string' },
+                      NomeRazaoSocial: { type: 'string' },
+                      NomeFantasia: { type: 'string' },
+                      Endereco: { type: 'string' },
+                      NumeroEndereco: { type: 'string' },
+                      ComplementoEndereco: { type: 'string' },
+                      Bairro: { type: 'string' },
+                      Cidade: { type: 'string' },
+                      Cep: { type: 'string' },
+                      Estado: { type: 'string' },
+                      Telefone1: { type: 'string' },
+                      Telefone2: { type: 'string' },
+                      Telefone3: { type: 'string' },
+                      Fax: { type: 'string' },
+                      CaixaPostal: { type: 'string' },
+                      Email: { type: 'string' },
+                      Contato: { type: 'string' },
+                      Observacao: { type: 'string' },
+                      CodigoCliente: { type: 'string' }
+                    }
+                  },
+                  CondicoesPagamento: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        ID: { type: 'number' },
+                        ParcelaPagamento: { type: 'number' },
+                        PercentualParcela: { type: 'number' },
+                        TipoParcela: { type: 'string' },
+                        ValorParcela: { type: 'number' },
+                        Observacao: { type: 'string' },
+                        DiaParcela: { type: 'number' }
+                      }
+                    }
+                  },
+                  Anexos: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        Arquivo: { type: 'string' },
+                        Nome: { type: 'string' },
+                        Extensao: { type: 'string' },
+                        Descricao: { type: 'string' }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         responses: {
-          '200': { description: 'OK' },
           '201': { description: 'Created' },
           '400': { description: 'Bad Request' },
           '401': { description: 'Unauthorized' },
+          '422': { description: 'Unprocessable Content' },
           '500': { description: 'Internal Server Error' }
         }
       },
@@ -730,20 +899,108 @@ export const apiGroups: ApiGroup[] = [
         method: 'GET',
         path: '/pedido/pedidoweb/{numeroPedido}',
         summary: 'Obtém dados do(s) pedido(s) publicado(s) na web',
+        description: 'Retorna informações dos pedidos publicados na web.',
         tags: ['Pedido'],
         parameters: [
           {
             name: 'numeroPedido',
             in: 'path',
-            description: 'Número do pedido',
+            description: 'numero pedido Cliente',
             required: true,
             schema: { type: 'string' }
           }
         ],
         responses: {
-          '200': { description: 'OK' },
+          '200': {
+            description: 'OK',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      NumeroWeb: { type: 'number' },
+                      NumeroCliente: { type: 'string' },
+                      Sequencia: { type: 'number' },
+                      Empresa: { type: 'string' },
+                      NomeFornecedor: { type: 'string' },
+                      NomeComprador: { type: 'string' }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          '204': { description: 'No Content' },
+          '400': { description: 'Bad Request' },
+          '401': { description: 'Unauthorized' },
+          '500': { description: 'Internal Server Error' }
+        }
+      },
+      {
+        id: 'pedidos-cancelados',
+        method: 'GET',
+        path: '/pedido/cancelados',
+        summary: 'Retorna lista de pedidos cancelados no portal Comlink',
+        description: 'Retorna uma lista de todos os pedidos que foram cancelados no portal Comlink.',
+        tags: ['Pedido'],
+        responses: {
+          '200': {
+            description: 'OK',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      DataCancelamento: { type: 'string', format: 'date-time' },
+                      NumeroPedidoComlink: { type: 'number' },
+                      NumeroCliente: { type: 'string' },
+                      Empresa: { type: 'string' },
+                      DocumentoEmpresa: { type: 'string' },
+                      NomeFornecedor: { type: 'string' },
+                      DocumentoFornecedor: { type: 'string' },
+                      NomeComprador: { type: 'string' },
+                      EmailComprador: { type: 'string' },
+                      DataEntrega: { type: 'string', format: 'date-time' },
+                      ValorTotal: { type: 'number' },
+                      Observacao: { type: 'string' },
+                      NumeroCotacaoComlink: { type: 'number' },
+                      CanceladoPor: { type: 'string' }
+                    }
+                  }
+                }
+              }
+            }
+          },
           '204': { description: 'No Content' },
           '401': { description: 'Unauthorized' },
+          '500': { description: 'Internal Server Error' }
+        }
+      },
+      {
+        id: 'confirmar-cancelamento-pedido',
+        method: 'PUT',
+        path: '/pedido/confirmacancelamento/{numeroPedido}',
+        summary: 'Confirma o recebimento sobre o cancelamento do pedido para a Comlink',
+        description: 'Confirma que o cancelamento do pedido foi processado.',
+        tags: ['Pedido'],
+        parameters: [
+          {
+            name: 'numeroPedido',
+            in: 'path',
+            description: 'numero pedido Comlink (PedidoCancelado.NumeroPedidoComlink)',
+            required: true,
+            schema: { type: 'number' }
+          }
+        ],
+        responses: {
+          '200': { description: 'OK' },
+          '400': { description: 'Bad Request' },
+          '401': { description: 'Unauthorized' },
+          '404': { description: 'Not Found' },
           '500': { description: 'Internal Server Error' }
         }
       }
