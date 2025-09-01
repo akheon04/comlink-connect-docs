@@ -722,166 +722,146 @@ export const apiGroups: ApiGroup[] = [
           description: 'pedido a ser publicado',
           content: {
             'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  Cabecalho: {
-                    type: 'object',
-                    properties: {
-                      ID: { type: 'number' },
-                      NumeroCliente: { type: 'string' },
-                      CodigoEmpresa: { type: 'number' },
-                      CodigoCliente: { type: 'number' },
-                      Sequencia: { type: 'number' },
-                      NomeEmpresa: { type: 'string' },
-                      CNPJ: { type: 'string' },
-                      InscricaoEstadual: { type: 'string' },
-                      TelefoneEmpresa: { type: 'string' },
-                      EnderecoEmpresa: { type: 'string' },
-                      CepEmpresa: { type: 'string' },
-                      CidadeEmpresa: { type: 'string' },
-                      EstadoEmpresa: { type: 'string' },
-                      BairroEmpresa: { type: 'string' },
-                      FaxEmpresa: { type: 'string' },
-                      EmailEmpresa: { type: 'string' },
-                      AlmoxarifaEmpresa: { type: 'string' },
-                      TipoPessoa: { type: 'string' },
-                      NomeComprador: { type: 'string' },
-                      EmailComprador: { type: 'string' },
-                      DataLiberacao: { type: 'string', format: 'date-time' },
-                      DataEmissao: { type: 'string', format: 'date-time' },
-                      DataEnvioWeb: { type: 'string', format: 'date-time' },
-                      DataEntrega: { type: 'string', format: 'date-time' },
-                      FormaRemessa: { type: 'string' },
-                      HorarioEntrega: { type: 'string' },
-                      Informativo: { type: 'string' },
-                      Aplicacao: { type: 'string' },
-                      Observacao: { type: 'string' },
-                      ObservacaoCobranca: { type: 'string' },
-                      Aprovador: { type: 'string' },
-                      CondicaoPagamento: { type: 'string' },
-                      LocalEntrega: { type: 'string' },
-                      Adiantamento: { type: 'string' },
-                      Status: { type: 'number' },
-                      DataAprovacao: { type: 'string', format: 'date-time' },
-                      ValorTotal: { type: 'number' },
-                      NomeVendedor: { type: 'string' },
-                      StatusWeb: { type: 'string' },
-                      Transportadora: { type: 'string' },
-                      CNPJTransportadora: { type: 'string' },
-                      NumeroCotacao: { type: 'string' },
-                      NumeroOrdem: { type: 'string' },
-                      NomeSolicitante: { type: 'string' },
-                      EmailSolicitante: { type: 'string' },
-                      ValorAcrescimo: { type: 'number' },
-                      ValorDesconto: { type: 'number' },
-                      ValorDespesa: { type: 'number' },
-                      ValorFrete: { type: 'number' },
-                      ValorIcms: { type: 'number' },
-                      ValorIpi: { type: 'number' },
-                      NumeroCotacaoComlink: { type: 'number' },
-                      NumeroPedidoComlink: { type: 'number' },
-                      TelefoneComprador: { type: 'string' },
-                      CodigoLoja: { type: 'string' },
-                      SimboloMoeda: { type: 'string' },
-                      ValorSaving: { type: 'number' },
-                      PercentualSaving: { type: 'number' }
-                    }
-                  },
-                  Itens: {
-                    type: 'array',
-                    items: {
-                      type: 'object',
-                      properties: {
-                        ID: { type: 'number' },
-                        NumeroItem: { type: 'number' },
-                        Sequencia: { type: 'number' },
-                        Quantidade: { type: 'number' },
-                        Unidade: { type: 'string' },
-                        CodigoItem: { type: 'string' },
-                        NumeroOrdem: { type: 'string' },
-                        DescricaoCompleta: { type: 'string' },
-                        ValorUnitario: { type: 'number' },
-                        ValorTotal: { type: 'number' },
-                        PercentualICMS: { type: 'number' },
-                        PercentualIPI: { type: 'number' },
-                        PercentualDesconto: { type: 'number' },
-                        PercentualST: { type: 'number' },
-                        DataEmissao: { type: 'string', format: 'date-time' },
-                        DataEntrega: { type: 'string', format: 'date-time' },
-                        PrazoEntrega: { type: 'string' },
-                        FormaRemessa: { type: 'string' },
-                        Transportadora: { type: 'string' },
-                        HorarioEntrega: { type: 'string' },
-                        Informativo: { type: 'string' },
-                        Aplicacao: { type: 'string' },
-                        Observacao: { type: 'string' },
-                        ObservacaoCobranca: { type: 'string' },
-                        Aprovador: { type: 'string' },
-                        CondicaoPagamento: { type: 'string' },
-                        Status: { type: 'number' },
-                        ValorDesconto: { type: 'number' },
-                        ValorST: { type: 'number' },
-                        Marca: { type: 'string' }
-                      }
-                    }
-                  },
-                  Fornecedor: {
-                    type: 'object',
-                    properties: {
-                      ID: { type: 'number' },
-                      CodigoComlink: { type: 'number' },
-                      DocumentoFornecedor: { type: 'string' },
-                      Inscricao: { type: 'string' },
-                      TipoPessoa: { type: 'string' },
-                      NomeRazaoSocial: { type: 'string' },
-                      NomeFantasia: { type: 'string' },
-                      Endereco: { type: 'string' },
-                      NumeroEndereco: { type: 'string' },
-                      ComplementoEndereco: { type: 'string' },
-                      Bairro: { type: 'string' },
-                      Cidade: { type: 'string' },
-                      Cep: { type: 'string' },
-                      Estado: { type: 'string' },
-                      Telefone1: { type: 'string' },
-                      Telefone2: { type: 'string' },
-                      Telefone3: { type: 'string' },
-                      Fax: { type: 'string' },
-                      CaixaPostal: { type: 'string' },
-                      Email: { type: 'string' },
-                      Contato: { type: 'string' },
-                      Observacao: { type: 'string' },
-                      CodigoCliente: { type: 'string' }
-                    }
-                  },
-                  CondicoesPagamento: {
-                    type: 'array',
-                    items: {
-                      type: 'object',
-                      properties: {
-                        ID: { type: 'number' },
-                        ParcelaPagamento: { type: 'number' },
-                        PercentualParcela: { type: 'number' },
-                        TipoParcela: { type: 'string' },
-                        ValorParcela: { type: 'number' },
-                        Observacao: { type: 'string' },
-                        DiaParcela: { type: 'number' }
-                      }
-                    }
-                  },
-                  Anexos: {
-                    type: 'array',
-                    items: {
-                      type: 'object',
-                      properties: {
-                        Arquivo: { type: 'string' },
-                        Nome: { type: 'string' },
-                        Extensao: { type: 'string' },
-                        Descricao: { type: 'string' }
-                      }
-                    }
+              schema: { type: 'object' },
+              example: {
+                "Cabecalho": {
+                  "ID": 0,
+                  "NumeroCliente": "string",
+                  "CodigoEmpresa": 0,
+                  "CodigoCliente": 0,
+                  "Sequencia": 0,
+                  "NomeEmpresa": "string",
+                  "CNPJ": "string",
+                  "InscricaoEstadual": "string",
+                  "TelefoneEmpresa": "string",
+                  "EnderecoEmpresa": "string",
+                  "CepEmpresa": "string",
+                  "CidadeEmpresa": "string",
+                  "EstadoEmpresa": "st",
+                  "BairroEmpresa": "string",
+                  "FaxEmpresa": "string",
+                  "EmailEmpresa": "string",
+                  "AlmoxarifaEmpresa": "string",
+                  "TipoPessoa": "s",
+                  "NomeComprador": "string",
+                  "EmailComprador": "string",
+                  "DataLiberacao": "2025-09-01T18:13:07.587Z",
+                  "DataEmissao": "2025-09-01T18:13:07.587Z",
+                  "DataEnvioWeb": "2025-09-01T18:13:07.587Z",
+                  "DataEntrega": "2025-09-01T18:13:07.587Z",
+                  "FormaRemessa": "s",
+                  "HorarioEntrega": "string",
+                  "Informativo": "string",
+                  "Aplicacao": "string",
+                  "Observacao": "string",
+                  "ObservacaoCobranca": "string",
+                  "Aprovador": "string",
+                  "CondicaoPagamento": "string",
+                  "LocalEntrega": "string",
+                  "Adiantamento": "string",
+                  "Status": 0,
+                  "DataAprovacao": "2025-09-01T18:13:07.587Z",
+                  "ValorTotal": 0,
+                  "NomeVendedor": "string",
+                  "StatusWeb": "s",
+                  "Transportadora": "string",
+                  "CNPJTransportadora": "string",
+                  "NumeroCotacao": "string",
+                  "NumeroOrdem": "string",
+                  "NomeSolicitante": "string",
+                  "EmailSolicitante": "string",
+                  "ValorAcrescimo": 0,
+                  "ValorDesconto": 0,
+                  "ValorDespesa": 0,
+                  "ValorFrete": 0,
+                  "ValorIcms": 0,
+                  "ValorIpi": 0,
+                  "NumeroCotacaoComlink": 0,
+                  "NumeroPedidoComlink": 0,
+                  "TelefoneComprador": "string",
+                  "CodigoLoja": "string",
+                  "SimboloMoeda": "stri",
+                  "ValorSaving": 0,
+                  "PercentualSaving": 0
+                },
+                "Itens": [
+                  {
+                    "ID": 0,
+                    "NumeroItem": 0,
+                    "Sequencia": 0,
+                    "Quantidade": 0,
+                    "Unidade": "str",
+                    "CodigoItem": "string",
+                    "NumeroOrdem": "string",
+                    "DescricaoCompleta": "string",
+                    "ValorUnitario": 0,
+                    "ValorTotal": 0,
+                    "PercentualICMS": 0,
+                    "PercentualIPI": 0,
+                    "PercentualDesconto": 0,
+                    "PercentualST": 0,
+                    "DataEmissao": "2025-09-01T18:13:07.587Z",
+                    "DataEntrega": "2025-09-01T18:13:07.587Z",
+                    "PrazoEntrega": "string",
+                    "FormaRemessa": "string", 
+                    "Transportadora": "string",
+                    "HorarioEntrega": "string",
+                    "Informativo": "string",
+                    "Aplicacao": "string",
+                    "Observacao": "string",
+                    "ObservacaoCobranca": "string",
+                    "Aprovador": "string",
+                    "CondicaoPagamento": "string",
+                    "Status": 0,
+                    "ValorDesconto": 0,
+                    "ValorST": 0,
+                    "Marca": "string"
                   }
-                }
+                ],
+                "Fornecedor": {
+                  "ID": 0,
+                  "CodigoComlink": 0,
+                  "DocumentoFornecedor": "string",
+                  "Inscricao": "string",
+                  "TipoPessoa": "string",
+                  "NomeRazaoSocial": "string",
+                  "NomeFantasia": "string",
+                  "Endereco": "string",
+                  "NumeroEndereco": "string",
+                  "ComplementoEndereco": "string",
+                  "Bairro": "string",
+                  "Cidade": "string",
+                  "Cep": "string",
+                  "Estado": "st",
+                  "Telefone1": "string",
+                  "Telefone2": "string",
+                  "Telefone3": "string",
+                  "Fax": "string",
+                  "CaixaPostal": "string",
+                  "Email": "string",
+                  "Contato": "string",
+                  "Observacao": "string",
+                  "CodigoCliente": "string"
+                },
+                "CondicoesPagamento": [
+                  {
+                    "ID": 0,
+                    "ParcelaPagamento": 0,
+                    "PercentualParcela": 0,
+                    "TipoParcela": "string",
+                    "ValorParcela": 0,
+                    "Observacao": "string",
+                    "DiaParcela": 0
+                  }
+                ],
+                "Anexos": [
+                  {
+                    "Arquivo": "string",
+                    "Nome": "string",
+                    "Extensao": "string",
+                    "Descricao": "string"
+                  }
+                ]
               }
             }
           }
@@ -1015,11 +995,41 @@ export const apiGroups: ApiGroup[] = [
         path: '/secure/token',
         summary: 'Obtém token de autenticação',
         tags: ['Secure'],
+        requestBody: {
+          description: 'Dados para obter token',
+          content: {
+            'application/json': {
+              schema: { type: 'object' },
+              example: {
+                "client_code": 0,
+                "client_key": "string",
+                "client_name": "string",
+                "grant_type": "string",
+                "refresh_token": "string"
+              }
+            }
+          }
+        },
         responses: {
-          '200': { description: 'OK' },
+          '200': {
+            description: 'OK',
+            content: {
+              'application/json': {
+                schema: { type: 'object' },
+                example: {
+                  "created_in": "2025-09-01T18:13:07.620Z",
+                  "expires_in": 0,
+                  "access_token": "string",
+                  "refresh_token": "string",
+                  "client_name": "string",
+                  "environment": "string",
+                  "hostname": "string"
+                }
+              }
+            }
+          },
           '400': { description: 'Bad Request' },
-          '401': { description: 'Unauthorized' },
-          '500': { description: 'Internal Server Error' }
+          '401': { description: 'Unauthorized' }
         }
       },
       {
@@ -1028,11 +1038,69 @@ export const apiGroups: ApiGroup[] = [
         path: '/secure/login/autorizar',
         summary: 'Autoriza o login',
         tags: ['Secure'],
+        requestBody: {
+          description: 'Dados para autorizar login',
+          content: {
+            'application/json': {
+              schema: { type: 'object' },
+              example: {
+                "client_code": 0,
+                "client_key": "string",
+                "client_name": "string",
+                "grant_type": "string",
+                "refresh_token": "string"
+              }
+            }
+          }
+        },
         responses: {
-          '200': { description: 'OK' },
+          '200': {
+            description: 'OK',
+            content: {
+              'application/json': {
+                schema: { type: 'object' },
+                example: {
+                  "created_in": "2025-09-01T18:13:07.628Z",
+                  "expires_in": 0,
+                  "access_token": "string",
+                  "refresh_token": "string",
+                  "client_name": "string",
+                  "environment": "string",
+                  "hostname": "string"
+                }
+              }
+            }
+          },
           '400': { description: 'Bad Request' },
-          '401': { description: 'Unauthorized' },
-          '500': { description: 'Internal Server Error' }
+          '401': { description: 'Unauthorized' }
+        }
+      },
+      {
+        id: 'obter-acesso-sso',
+        method: 'POST',
+        path: '/secure/acesso',
+        summary: 'Obtém acesso ao single sign on',
+        tags: ['Secure'],
+        responses: {
+          '201': {
+            description: 'Created',
+            content: {
+              'application/json': {
+                schema: { type: 'object' },
+                example: {
+                  "created_in": "2025-09-01T18:13:07.630Z",
+                  "expires_in": 0,
+                  "access_token": "string",
+                  "refresh_token": "string",
+                  "client_name": "string",
+                  "environment": "string",
+                  "hostname": "string"
+                }
+              }
+            }
+          },
+          '400': { description: 'Bad Request' },
+          '401': { description: 'Unauthorized' }
         }
       }
     ]
@@ -1081,7 +1149,28 @@ export const apiGroups: ApiGroup[] = [
                   "CodigoFornecedor": 0,
                   "DocumentoFornecedor": "string",
                   "NomeRazaoSocial": "string",
-                  "NomeFantasia": "string"
+                  "NomeFantasia": "string",
+                  "InscricaoEstadual": "string",
+                  "InscricaoMunicipal": "string",
+                  "TipoPessoa": "s",
+                  "Endereco": "string",
+                  "NumeroEndereco": "string",
+                  "TipoLogradouro": "string",
+                  "Complemento": "string",
+                  "Bairro": "string",
+                  "Cidade": "string",
+                  "Cep": "string",
+                  "Telefone1": "string",
+                  "Telefone2": "string",
+                  "Telefone3": "string",
+                  "Fax": "string",
+                  "CaixaPostal": "string",
+                  "Email": "string",
+                  "Contato": "string",
+                  "Estado": "st",
+                  "DDDTelefone": "st",
+                  "DDDFax": "st",
+                  "CodigoIBGE": 0
                 },
                 "Operacoes": [
                   {
@@ -1168,7 +1257,109 @@ export const apiGroups: ApiGroup[] = [
           }
         ],
         responses: {
-          '200': { description: 'OK' },
+          '200': {
+            description: 'OK',
+            content: {
+              'application/json': {
+                schema: { type: 'object' },
+                example: {
+                  "Prestador": {
+                    "NumeroComlink": 0,
+                    "DocumentoPrestador": "string",
+                    "DataResposta": "2025-09-01T18:13:07.564Z",
+                    "ValidadeProposta": 0,
+                    "Observacao": "string",
+                    "NumeroOrcamento": "string",
+                    "CondicaoPagamentoMaterial": "string",
+                    "CondicaoPagamentoServico": "string",
+                    "FormaRemessa": "string",
+                    "LocalRetirada": "string"
+                  },
+                  "CadastroPrestador": {
+                    "NumeroComlink": 0,
+                    "CodigoFornecedor": 0,
+                    "DocumentoFornecedor": "string",
+                    "NomeRazaoSocial": "string",
+                    "NomeFantasia": "string",
+                    "InscricaoEstadual": "string",
+                    "InscricaoMunicipal": "string",
+                    "TipoPessoa": "s",
+                    "Endereco": "string",
+                    "NumeroEndereco": "string",
+                    "TipoLogradouro": "string",
+                    "Complemento": "string",
+                    "Bairro": "string",
+                    "Cidade": "string",
+                    "Cep": "string",
+                    "Telefone1": "string",
+                    "Telefone2": "string",
+                    "Telefone3": "string",
+                    "Fax": "string",
+                    "CaixaPostal": "string",
+                    "Email": "string",
+                    "Contato": "string",
+                    "Estado": "st",
+                    "DDDTelefone": "st",
+                    "DDDFax": "st",
+                    "CodigoIBGE": 0
+                  },
+                  "Itens": [
+                    {
+                      "NumeroComlink": 0,
+                      "NumeroOrdemServico": "string",
+                      "SequenciaOrdemServico": 0,
+                      "TipoServico": 0,
+                      "NumeroItemOperacao": 0,
+                      "NumeroItemAtividade": 0,
+                      "NumeroItem": 0,
+                      "CodigoEquipamento": "string",
+                      "DescricaoCompleta": "string",
+                      "Unidade": "string",
+                      "Quantidade": 0,
+                      "CodigoImposto": "string"
+                    }
+                  ],
+                  "ItensMarcasReferencias": [
+                    {
+                      "NumeroComlink": 0,
+                      "NumeroOrdemServico": "string",
+                      "Sequencia": 0,
+                      "NumeroItemOperacao": 0,
+                      "NumeroItemAtividade": 0,
+                      "NumeroItem": 0,
+                      "SequenciaOperacao": 0,
+                      "Marca": "string",
+                      "Referencia": "string",
+                      "Observacao": "string"
+                    }
+                  ],
+                  "ItensPrecos": [
+                    {
+                      "NumeroComlink": 0,
+                      "NumeroItemOperacao": 0,
+                      "NumeroItemAtividade": 0,
+                      "NumeroItem": 0,
+                      "SequenciaItem": 0,
+                      "DocumentoPrestador": "string",
+                      "QuantidadePrestador": 0,
+                      "PrecoPrestador": 0,
+                      "PercentualICMS": 0,
+                      "PercentualIPI": 0,
+                      "PercentualISS": 0,
+                      "PercentualDesconto": 0,
+                      "Marca": "string",
+                      "Referencia": "string",
+                      "Observacao": "string",
+                      "MarcaWeb": "string",
+                      "PrazoEntrega": 0,
+                      "PrecoNegociado": 0,
+                      "QuantidadeNegociada": 0
+                    }
+                  ]
+                }
+              }
+            }
+          },
           '400': { description: 'Bad Request' },
           '401': { description: 'Unauthorized' },
           '500': { description: 'Internal Server Error' }
@@ -1518,6 +1709,13 @@ export const apiGroups: ApiGroup[] = [
                     "Quantidade": 0,
                     "ObsCmp": "string",
                     "ObsForn": "string",
+                    "MarcasReferencias": [
+                      {
+                        "Referencia": "string",
+                        "Marca": "string",
+                        "MaterialFilho": "string"
+                      }
+                    ],
                     "Descricao": "string",
                     "Embalagem": "string",
                     "Unidade": "string",
@@ -1526,7 +1724,48 @@ export const apiGroups: ApiGroup[] = [
                     "DataEntrega": "2025-08-26T11:38:20.067Z",
                     "DataRemessa": "2025-08-26T11:38:20.067Z",
                     "DataEmissao": "2025-08-26T11:38:20.067Z",
-                    "DataLiberacao": "2025-08-26T11:38:20.067Z"
+                    "DataLiberacao": "2025-08-26T11:38:20.067Z",
+                    "ItmFinanceiro": "string",
+                    "DescricaoResumida": "string",
+                    "ItemReq": "string",
+                    "DataNecessidade": "2025-08-26T11:38:20.067Z",
+                    "CentroCusto": "string",
+                    "Lote": "string",
+                    "SubLote": "string",
+                    "DataValidade": "2025-08-26T11:38:20.067Z",
+                    "Observacao": "string",
+                    "Justificativa": "string",
+                    "Local": "string",
+                    "QtdPedida": 0,
+                    "CodigoOrcamento": "string",
+                    "Projeto": "string",
+                    "Versao": "string",
+                    "Tarefa": "string",
+                    "CategClassCon": "string",
+                    "CentroSaida": "string",
+                    "CodigoMoeda": "string",
+                    "CodItemDocCompra": "string",
+                    "DataUltModifica": "2025-08-26T11:38:20.067Z",
+                    "Deposito": "string",
+                    "FornecedorFixo": "string",
+                    "FornecedorPretendido": "string",
+                    "GrupoCompradores": "string",
+                    "GrupoMercadoria": "string",
+                    "GrupoMercadoriaDescricao": "string",
+                    "TrackingNum": "string",
+                    "ContratoNum": "string",
+                    "MatNum": "string",
+                    "RespNom": "string",
+                    "OrgComp": "string",
+                    "PlanMrp": "string",
+                    "PrecoReqCompra": 0,
+                    "TempoProcEntDiaMerc": 0,
+                    "TipoDataRemessa": "string",
+                    "RegistroInfo": "string",
+                    "TextoItem": "string",
+                    "UnidadePreco": 0,
+                    "Centro": "string",
+                    "BloqErp": true
                   }
                 ],
                 "Anexos": [
@@ -1677,7 +1916,23 @@ export const apiGroups: ApiGroup[] = [
         summary: 'Retorna informação sobre a versão da API',
         tags: ['Versao'],
         responses: {
-          '200': { description: 'OK' }
+          '200': {
+            description: 'OK',
+            content: {
+              'application/json': {
+                schema: { type: 'object' },
+                example: {
+                  "Ambiente": "string",
+                  "NumeroVersao": "string",
+                  "HostName": "string"
+                }
+              }
+            }
+          },
+          '204': { description: 'No Content' },
+          '400': { description: 'Bad Request' },
+          '401': { description: 'Unauthorized' },
+          '500': { description: 'Internal Server Error' }
         }
       }
     ]
