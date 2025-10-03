@@ -8,7 +8,8 @@ import { ApiEndpoint, ApiGroup, RequestHistory } from '@/types/api';
 import { apiGroups, API_BASE_URL } from '@/data/apiData';
 import { EndpointDetail } from './EndpointDetail';
 import { RequestTester } from './RequestTester';
-import { Clock, Code, Globe } from 'lucide-react';
+import { Clock, Code, Globe, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface ApiDocumentationProps {}
 
@@ -54,6 +55,12 @@ export const ApiDocumentation: React.FC<ApiDocumentationProps> = () => {
               <div>
                 <h1 className="text-2xl font-bold text-foreground">API Comlink</h1>
                 <p className="text-sm text-muted-foreground">Integração - v1.0</p>
+                <Link to="/messages">
+                  <Button variant="link" className="px-0 h-auto text-xs">
+                    <ExternalLink className="h-3 w-3 mr-1" />
+                    Ver exemplo de integração
+                  </Button>
+                </Link>
               </div>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
