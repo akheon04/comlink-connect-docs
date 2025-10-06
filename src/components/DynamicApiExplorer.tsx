@@ -9,8 +9,8 @@ import { DynamicEndpointDetail } from './DynamicEndpointDetail';
 import { RefreshCw, Globe, AlertCircle, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-const API_DOCS_URL = 'http://localhost:8080/v3/api-docs';
-
+//const API_DOCS_URL = 'http://localhost:8080/v3/api-docs';
+const API_DOCS_URL = 'https://localhost:5001/swagger/v1/swagger.json';
 export const DynamicApiExplorer: React.FC = () => {
   const { spec, endpoints, loading, error, refresh, getGroupedEndpoints, baseUrl, resolveSchema } = useOpenApiSpec(API_DOCS_URL);
   const [selectedEndpoint, setSelectedEndpoint] = useState<any>(null);
@@ -118,7 +118,7 @@ export const DynamicApiExplorer: React.FC = () => {
                 >
                   Visão Geral
                 </Button>
-                
+
                 <ScrollArea className="h-[calc(100vh-300px)]">
                   {Object.entries(groupedEndpoints).map(([tag, tagEndpoints]) => (
                     <div key={tag}>
