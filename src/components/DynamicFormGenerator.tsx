@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Send, CheckCircle2, XCircle } from 'lucide-react';
+import { Loader2, Send, CheckCircle2, XCircle, Key } from 'lucide-react';
 import { CodeBlock } from './CodeBlock';
 
 interface DynamicFormGeneratorProps {
@@ -23,113 +23,61 @@ export const DynamicFormGenerator: React.FC<DynamicFormGeneratorProps> = ({
 }) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState<any>({});
+  const [bearerToken, setBearerToken] = useState('');
+  const [jsonBody, setJsonBody] = useState('');
   const [pathParams, setPathParams] = useState<any>({});
   const [queryParams, setQueryParams] = useState<any>({});
   const [response, setResponse] = useState<any>(null);
 
-  const generateFieldsFromSchema = (schema: any): any[] => {
+  const generateSchemaDescription = (schema: any): string => {
     const resolved = resolveSchema(schema);
-    if (!resolved?.properties) return [];
+    if (!resolved?.properties) return '';
 
-    return Object.entries(resolved.properties).map(([key, value]: [string, any]) => ({
-      name: key,
-      type: value.type || 'string',
-      format: value.format,
-      description: value.description,
-      required: resolved.required?.includes(key) || false,
-      example: value.example,
-      enum: value.enum
-    }));
+    const fields = Object.entries(resolved.properties).map(([key, value]: [string, any]) => {
+      const field: any = {
+        name: key,
+        type: value.type || 'string',
+        description: value.description || '',
+        required: resolved.required?.includes(key) || false,
+        example: value.example
+      };
+      
+      let fieldDesc = `  "${field.name}": `;
+      if (field.example !== undefined) {
+        fieldDesc += typeof field.example === 'string' ? `"${field.example}"` : field.example;
+      } else if (field.type === 'string') {
+        fieldDesc += '""';
+      } else if (field.type === 'number' || field.type === 'integer') {
+        fieldDesc += '0';
+      } else if (field.type === 'boolean') {
+        fieldDesc += 'false';
+      } else if (field.type === 'array') {
+        fieldDesc += '[]';
+      } else {
+        fieldDesc += '{}';
+      }
+      
+      if (field.description) {
+        fieldDesc += ` // ${field.description}`;
+      }
+      if (field.required) {
+        fieldDesc += ' (obrigatório)';
+      }
+      
+      return fieldDesc;
+    });
+
+    return '{\n' + fields.join(',\n') + '\n}';
   };
 
-  const renderField = (field: any, value: any, onChange: (val: any) => void) => {
-    const inputId = `field-${field.name}`;
-
-    switch (field.type) {
-      case 'integer':
-      case 'number':
-        return (
-          <Input
-            id={inputId}
-            type="number"
-            value={value || ''}
-            onChange={(e) => onChange(e.target.value ? Number(e.target.value) : '')}
-            placeholder={field.example?.toString() || '0'}
-          />
-        );
-
-      case 'boolean':
-        return (
-          <select
-            id={inputId}
-            value={value?.toString() || 'false'}
-            onChange={(e) => onChange(e.target.value === 'true')}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          >
-            <option value="true">true</option>
-            <option value="false">false</option>
-          </select>
-        );
-
-      case 'array':
-        return (
-          <Textarea
-            id={inputId}
-            value={value || ''}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder="[]"
-            rows={3}
-          />
-        );
-
-      default:
-        if (field.enum) {
-          return (
-            <select
-              id={inputId}
-              value={value || ''}
-              onChange={(e) => onChange(e.target.value)}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-            >
-              <option value="">Selecione...</option>
-              {field.enum.map((opt: string) => (
-                <option key={opt} value={opt}>{opt}</option>
-              ))}
-            </select>
-          );
-        }
-
-        if (field.format === 'date-time') {
-          return (
-            <Input
-              id={inputId}
-              type="datetime-local"
-              value={value || ''}
-              onChange={(e) => onChange(e.target.value)}
-            />
-          );
-        }
-
-        return field.description?.length > 50 ? (
-          <Textarea
-            id={inputId}
-            value={value || ''}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={field.example || ''}
-            rows={3}
-          />
-        ) : (
-          <Input
-            id={inputId}
-            type="text"
-            value={value || ''}
-            onChange={(e) => onChange(e.target.value)}
-            placeholder={field.example || ''}
-          />
-        );
+  // Initialize JSON body with example
+  useEffect(() => {
+    const requestBodySchema = endpoint.operation.requestBody?.content?.['application/json']?.schema;
+    if (requestBodySchema && !jsonBody) {
+      const description = generateSchemaDescription(requestBodySchema);
+      setJsonBody(description);
     }
-  };
+  }, [endpoint]);
 
   const executeRequest = async () => {
     setLoading(true);
@@ -155,15 +103,38 @@ export const DynamicFormGenerator: React.FC<DynamicFormGeneratorProps> = ({
         url += `?${queryString}`;
       }
 
-      const options: RequestInit = {
-        method: endpoint.method,
-        headers: {
-          'Content-Type': 'application/json',
-        }
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
       };
 
-      if (['POST', 'PUT', 'PATCH'].includes(endpoint.method)) {
-        options.body = JSON.stringify(formData);
+      if (bearerToken) {
+        headers['Authorization'] = `Bearer ${bearerToken}`;
+      }
+
+      const options: RequestInit = {
+        method: endpoint.method,
+        headers
+      };
+
+      if (['POST', 'PUT', 'PATCH'].includes(endpoint.method) && jsonBody.trim()) {
+        try {
+          // Remove comments from JSON before parsing
+          const cleanJson = jsonBody.split('\n')
+            .map(line => line.replace(/\/\/.*$/, '').trim())
+            .filter(line => line)
+            .join('\n');
+          
+          const parsedBody = JSON.parse(cleanJson);
+          options.body = JSON.stringify(parsedBody);
+        } catch (error) {
+          toast({
+            title: 'Erro no JSON',
+            description: 'O JSON do corpo da requisição está inválido',
+            variant: 'destructive'
+          });
+          setLoading(false);
+          return;
+        }
       }
 
       const startTime = Date.now();
@@ -220,7 +191,7 @@ export const DynamicFormGenerator: React.FC<DynamicFormGeneratorProps> = ({
 
   // Get request body schema
   const requestBodySchema = endpoint.operation.requestBody?.content?.['application/json']?.schema;
-  const requestFields = requestBodySchema ? generateFieldsFromSchema(requestBodySchema) : [];
+  const hasRequestBody = !!requestBodySchema;
 
   return (
     <Card>
@@ -231,6 +202,25 @@ export const DynamicFormGenerator: React.FC<DynamicFormGeneratorProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Bearer Token */}
+        <div>
+          <Label htmlFor="bearer-token" className="flex items-center gap-2 mb-2">
+            <Key className="h-4 w-4" />
+            Bearer Token (Authorization)
+          </Label>
+          <Input
+            id="bearer-token"
+            type="password"
+            value={bearerToken}
+            onChange={(e) => setBearerToken(e.target.value)}
+            placeholder="Cole seu token de autorização aqui"
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Será enviado como: Authorization: Bearer &lt;token&gt;
+          </p>
+        </div>
+
+        <Separator />
         {/* Path Parameters */}
         {pathParameters.length > 0 && (
           <div>
@@ -283,27 +273,22 @@ export const DynamicFormGenerator: React.FC<DynamicFormGeneratorProps> = ({
           </div>
         )}
 
-        {/* Request Body Fields */}
-        {requestFields.length > 0 && (
+        {/* Request Body JSON Editor */}
+        {hasRequestBody && (
           <div>
-            <h4 className="font-medium mb-3">Corpo da Requisição</h4>
-            <div className="space-y-4">
-              {requestFields.map((field) => (
-                <div key={field.name}>
-                  <Label htmlFor={`field-${field.name}`} className="flex items-center gap-2">
-                    {field.name}
-                    {field.required && <Badge variant="destructive" className="text-xs">obrigatório</Badge>}
-                    <span className="text-xs text-muted-foreground">({field.type})</span>
-                  </Label>
-                  {renderField(field, formData[field.name], (value) => {
-                    setFormData({ ...formData, [field.name]: value });
-                  })}
-                  {field.description && (
-                    <p className="text-xs text-muted-foreground mt-1">{field.description}</p>
-                  )}
-                </div>
-              ))}
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="font-medium">Corpo da Requisição (JSON)</h4>
+              <Badge variant="secondary">application/json</Badge>
             </div>
+            <Textarea
+              value={jsonBody}
+              onChange={(e) => setJsonBody(e.target.value)}
+              placeholder='{\n  "campo": "valor"\n}'
+              className="font-mono text-sm min-h-[300px]"
+            />
+            <p className="text-xs text-muted-foreground mt-2">
+              💡 Edite o JSON acima. Linhas com "//" são comentários e serão removidas automaticamente.
+            </p>
           </div>
         )}
 
