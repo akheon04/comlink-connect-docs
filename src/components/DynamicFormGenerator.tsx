@@ -37,8 +37,6 @@ export const DynamicFormGenerator: React.FC<DynamicFormGeneratorProps> = ({
       const field: any = {
         name: key,
         type: value.type || 'string',
-        description: value.description || '',
-        required: resolved.required?.includes(key) || false,
         example: value.example
       };
       
@@ -57,17 +55,23 @@ export const DynamicFormGenerator: React.FC<DynamicFormGeneratorProps> = ({
         fieldDesc += '{}';
       }
       
-      if (field.description) {
-        fieldDesc += ` // ${field.description}`;
-      }
-      if (field.required) {
-        fieldDesc += ' (obrigatório)';
-      }
-      
       return fieldDesc;
     });
 
     return '{\n' + fields.join(',\n') + '\n}';
+  };
+
+  const getFieldsInfo = (schema: any) => {
+    const resolved = resolveSchema(schema);
+    if (!resolved?.properties) return [];
+
+    return Object.entries(resolved.properties).map(([key, value]: [string, any]) => ({
+      name: key,
+      type: value.type || 'string',
+      description: value.description || '',
+      required: resolved.required?.includes(key) || false,
+      example: value.example
+    }));
   };
 
   // Initialize JSON body with example
@@ -118,13 +122,7 @@ export const DynamicFormGenerator: React.FC<DynamicFormGeneratorProps> = ({
 
       if (['POST', 'PUT', 'PATCH'].includes(endpoint.method) && jsonBody.trim()) {
         try {
-          // Remove comments from JSON before parsing
-          const cleanJson = jsonBody.split('\n')
-            .map(line => line.replace(/\/\/.*$/, '').trim())
-            .filter(line => line)
-            .join('\n');
-          
-          const parsedBody = JSON.parse(cleanJson);
+          const parsedBody = JSON.parse(jsonBody);
           options.body = JSON.stringify(parsedBody);
         } catch (error) {
           toast({
@@ -280,6 +278,31 @@ export const DynamicFormGenerator: React.FC<DynamicFormGeneratorProps> = ({
               <h4 className="font-medium">Corpo da Requisição (JSON)</h4>
               <Badge variant="secondary">application/json</Badge>
             </div>
+            
+            {/* Fields description */}
+            <div className="mb-4 p-4 bg-muted/50 rounded-lg space-y-2">
+              <p className="text-sm font-medium mb-2">Campos do JSON:</p>
+              {getFieldsInfo(requestBodySchema).map((field) => (
+                <div key={field.name} className="text-sm">
+                  <span className="font-mono font-semibold">{field.name}</span>
+                  <span className="text-muted-foreground ml-2">({field.type})</span>
+                  {field.required && (
+                    <Badge variant="destructive" className="ml-2 text-xs">obrigatório</Badge>
+                  )}
+                  {field.description && (
+                    <p className="text-muted-foreground text-xs mt-1 ml-4">
+                      {field.description}
+                    </p>
+                  )}
+                  {field.example !== undefined && (
+                    <p className="text-muted-foreground text-xs ml-4">
+                      Exemplo: {typeof field.example === 'string' ? `"${field.example}"` : field.example}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+
             <Textarea
               value={jsonBody}
               onChange={(e) => setJsonBody(e.target.value)}
@@ -287,7 +310,7 @@ export const DynamicFormGenerator: React.FC<DynamicFormGeneratorProps> = ({
               className="font-mono text-sm min-h-[300px]"
             />
             <p className="text-xs text-muted-foreground mt-2">
-              💡 Edite o JSON acima. Linhas com "//" são comentários e serão removidas automaticamente.
+              💡 Edite o JSON acima com os campos descritos.
             </p>
           </div>
         )}
