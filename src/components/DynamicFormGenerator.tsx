@@ -29,57 +29,111 @@ export const DynamicFormGenerator: React.FC<DynamicFormGeneratorProps> = ({
   const [queryParams, setQueryParams] = useState<any>({});
   const [response, setResponse] = useState<any>(null);
 
-  const generateSchemaDescription = (schema: any): string => {
+  const generateExampleFromSchema = (schema: any, depth: number = 0): any => {
+    if (depth > 10) return null; // Prevent infinite recursion
+    
     const resolved = resolveSchema(schema);
-    if (!resolved?.properties) return '';
-
-    const fields = Object.entries(resolved.properties).map(([key, value]: [string, any]) => {
-      const field: any = {
-        name: key,
-        type: value.type || 'string',
-        example: value.example
-      };
-      
-      let fieldDesc = `  "${field.name}": `;
-      if (field.example !== undefined) {
-        fieldDesc += typeof field.example === 'string' ? `"${field.example}"` : field.example;
-      } else if (field.type === 'string') {
-        fieldDesc += '""';
-      } else if (field.type === 'number' || field.type === 'integer') {
-        fieldDesc += '0';
-      } else if (field.type === 'boolean') {
-        fieldDesc += 'false';
-      } else if (field.type === 'array') {
-        fieldDesc += '[]';
-      } else {
-        fieldDesc += '{}';
+    
+    if (!resolved) return null;
+    
+    // If there's a direct example, use it
+    if (resolved.example !== undefined) {
+      return resolved.example;
+    }
+    
+    // Handle different types
+    if (resolved.type === 'object' && resolved.properties) {
+      const obj: any = {};
+      Object.entries(resolved.properties).forEach(([key, propSchema]: [string, any]) => {
+        obj[key] = generateExampleFromSchema(propSchema, depth + 1);
+      });
+      return obj;
+    }
+    
+    if (resolved.type === 'array') {
+      if (resolved.items) {
+        // Generate one example item in the array
+        return [generateExampleFromSchema(resolved.items, depth + 1)];
       }
-      
-      return fieldDesc;
-    });
-
-    return '{\n' + fields.join(',\n') + '\n}';
+      return [];
+    }
+    
+    if (resolved.type === 'string') {
+      return resolved.enum?.[0] || resolved.format === 'date-time' ? new Date().toISOString() : 'string';
+    }
+    
+    if (resolved.type === 'number' || resolved.type === 'integer') {
+      return 0;
+    }
+    
+    if (resolved.type === 'boolean') {
+      return false;
+    }
+    
+    // Handle allOf, oneOf, anyOf
+    if (resolved.allOf && resolved.allOf.length > 0) {
+      let merged: any = {};
+      resolved.allOf.forEach((subSchema: any) => {
+        const subExample = generateExampleFromSchema(subSchema, depth + 1);
+        if (typeof subExample === 'object' && subExample !== null) {
+          merged = { ...merged, ...subExample };
+        }
+      });
+      return merged;
+    }
+    
+    if (resolved.oneOf && resolved.oneOf.length > 0) {
+      return generateExampleFromSchema(resolved.oneOf[0], depth + 1);
+    }
+    
+    if (resolved.anyOf && resolved.anyOf.length > 0) {
+      return generateExampleFromSchema(resolved.anyOf[0], depth + 1);
+    }
+    
+    return null;
   };
 
-  const getFieldsInfo = (schema: any) => {
+  const getFieldsInfo = (schema: any, prefix: string = ''): any[] => {
     const resolved = resolveSchema(schema);
-    if (!resolved?.properties) return [];
+    if (!resolved) return [];
 
-    return Object.entries(resolved.properties).map(([key, value]: [string, any]) => ({
-      name: key,
-      type: value.type || 'string',
-      description: value.description || '',
-      required: resolved.required?.includes(key) || false,
-      example: value.example
-    }));
+    const fields: any[] = [];
+
+    if (resolved.type === 'object' && resolved.properties) {
+      Object.entries(resolved.properties).forEach(([key, value]: [string, any]) => {
+        const fullKey = prefix ? `${prefix}.${key}` : key;
+        const propResolved = resolveSchema(value);
+        
+        fields.push({
+          name: fullKey,
+          type: propResolved.type || 'string',
+          description: propResolved.description || '',
+          required: resolved.required?.includes(key) || false,
+          example: propResolved.example,
+          isNested: !!prefix
+        });
+
+        // If it's an object or array, recursively get nested fields
+        if (propResolved.type === 'object' && propResolved.properties) {
+          fields.push(...getFieldsInfo(propResolved, fullKey));
+        } else if (propResolved.type === 'array' && propResolved.items) {
+          const itemsResolved = resolveSchema(propResolved.items);
+          if (itemsResolved.type === 'object') {
+            fields.push(...getFieldsInfo(itemsResolved, `${fullKey}[0]`));
+          }
+        }
+      });
+    }
+
+    return fields;
   };
 
   // Initialize JSON body with example
   useEffect(() => {
     const requestBodySchema = endpoint.operation.requestBody?.content?.['application/json']?.schema;
     if (requestBodySchema && !jsonBody) {
-      const description = generateSchemaDescription(requestBodySchema);
-      setJsonBody(description);
+      const exampleData = generateExampleFromSchema(requestBodySchema);
+      setJsonBody(JSON.stringify(exampleData, null, 2));
     }
   }, [endpoint]);
 
@@ -280,27 +334,32 @@ export const DynamicFormGenerator: React.FC<DynamicFormGeneratorProps> = ({
             </div>
             
             {/* Fields description */}
-            <div className="mb-4 p-4 bg-muted/50 rounded-lg space-y-2">
+            <div className="mb-4 p-4 bg-muted/50 rounded-lg space-y-2 max-h-[400px] overflow-y-auto">
               <p className="text-sm font-medium mb-2">Campos do JSON:</p>
-              {getFieldsInfo(requestBodySchema).map((field) => (
-                <div key={field.name} className="text-sm">
+              {getFieldsInfo(requestBodySchema).slice(0, 50).map((field, idx) => (
+                <div key={`${field.name}-${idx}`} className="text-sm" style={{ paddingLeft: field.isNested ? '1rem' : '0' }}>
                   <span className="font-mono font-semibold">{field.name}</span>
                   <span className="text-muted-foreground ml-2">({field.type})</span>
                   {field.required && (
                     <Badge variant="destructive" className="ml-2 text-xs">obrigatório</Badge>
                   )}
                   {field.description && (
-                    <p className="text-muted-foreground text-xs mt-1 ml-4">
+                    <p className="text-muted-foreground text-xs mt-1">
                       {field.description}
                     </p>
                   )}
-                  {field.example !== undefined && (
-                    <p className="text-muted-foreground text-xs ml-4">
-                      Exemplo: {typeof field.example === 'string' ? `"${field.example}"` : field.example}
+                  {field.example !== undefined && field.example !== null && (
+                    <p className="text-muted-foreground text-xs">
+                      Exemplo: {typeof field.example === 'string' ? `"${field.example}"` : JSON.stringify(field.example)}
                     </p>
                   )}
                 </div>
               ))}
+              {getFieldsInfo(requestBodySchema).length > 50 && (
+                <p className="text-xs text-muted-foreground italic">
+                  ... e mais {getFieldsInfo(requestBodySchema).length - 50} campos
+                </p>
+              )}
             </div>
 
             <Textarea

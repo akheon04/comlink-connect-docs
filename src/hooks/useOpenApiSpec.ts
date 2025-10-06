@@ -124,12 +124,37 @@ export const useOpenApiSpec = (apiDocsUrl: string) => {
     fetchSpec();
   }, [fetchSpec]);
 
-  const resolveSchema = useCallback((schemaRef: any): any => {
-    if (!spec) return null;
+  const resolveSchema = useCallback((schemaRef: any, depth: number = 0): any => {
+    if (!spec || depth > 20) return schemaRef; // Prevent infinite recursion
     
     if (schemaRef.$ref) {
       const refPath = schemaRef.$ref.replace('#/components/schemas/', '');
-      return spec.components?.schemas?.[refPath];
+      const resolved = spec.components?.schemas?.[refPath];
+      return resolveSchema(resolved, depth + 1);
+    }
+    
+    if (schemaRef.type === 'object' && schemaRef.properties) {
+      const resolvedProperties: any = {};
+      Object.entries(schemaRef.properties).forEach(([key, value]) => {
+        resolvedProperties[key] = resolveSchema(value, depth + 1);
+      });
+      return { ...schemaRef, properties: resolvedProperties };
+    }
+    
+    if (schemaRef.type === 'array' && schemaRef.items) {
+      return { ...schemaRef, items: resolveSchema(schemaRef.items, depth + 1) };
+    }
+    
+    if (schemaRef.allOf) {
+      let merged: any = {};
+      schemaRef.allOf.forEach((subSchema: any) => {
+        const resolved = resolveSchema(subSchema, depth + 1);
+        merged = { ...merged, ...resolved };
+        if (resolved.properties) {
+          merged.properties = { ...merged.properties, ...resolved.properties };
+        }
+      });
+      return merged;
     }
     
     return schemaRef;
