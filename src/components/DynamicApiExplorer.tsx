@@ -11,8 +11,10 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 //const API_DOCS_URL = 'http://localhost:8080/v3/api-docs';
 const API_DOCS_URL = 'https://localhost:5001/swagger/v1/swagger.json';
+const BASE_URL = 'https://sonora-dev.comlink.com.br/integracao';
+
 export const DynamicApiExplorer: React.FC = () => {
-  const { spec, endpoints, loading, error, refresh, getGroupedEndpoints, baseUrl, resolveSchema } = useOpenApiSpec(API_DOCS_URL);
+  const { spec, endpoints, loading, error, refresh, getGroupedEndpoints, resolveSchema } = useOpenApiSpec(API_DOCS_URL);
   const [selectedEndpoint, setSelectedEndpoint] = useState<any>(null);
   const [activeSection, setActiveSection] = useState<string>('overview');
 
@@ -87,7 +89,7 @@ export const DynamicApiExplorer: React.FC = () => {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Globe className="h-4 w-4" />
-                <code className="bg-muted px-2 py-1 rounded text-xs">{baseUrl || API_DOCS_URL}</code>
+                <code className="bg-muted px-2 py-1 rounded text-xs">{BASE_URL}</code>
               </div>
               <Button onClick={refresh} variant="outline" size="sm">
                 <RefreshCw className="h-4 w-4 mr-2" />
@@ -196,7 +198,7 @@ export const DynamicApiExplorer: React.FC = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">URL Base:</span>
-                      <code className="bg-muted px-2 py-1 rounded">{baseUrl || 'http://localhost:8080'}</code>
+                      <code className="bg-muted px-2 py-1 rounded">{BASE_URL}</code>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Versão:</span>
@@ -219,7 +221,7 @@ export const DynamicApiExplorer: React.FC = () => {
           {activeSection === 'endpoint' && selectedEndpoint && (
             <DynamicEndpointDetail
               endpoint={selectedEndpoint}
-              baseUrl={baseUrl || 'http://localhost:8080'}
+              baseUrl={BASE_URL}
               resolveSchema={resolveSchema}
             />
           )}
