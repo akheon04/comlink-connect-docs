@@ -10,8 +10,7 @@ import { RefreshCw, Globe, AlertCircle, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 //const API_DOCS_URL = 'http://localhost:8080/v3/api-docs';
-//const API_DOCS_URL = 'https://localhost:5001/swagger/v1/swagger.json';
-const API_DOCS_URL = 'https://sonora-dev.comlink.com.br/integracao/swagger/v1/swagger.json';
+const API_DOCS_URL = 'https://localhost:5001/swagger/v1/swagger.json';
 export const DynamicApiExplorer: React.FC = () => {
   const { spec, endpoints, loading, error, refresh, getGroupedEndpoints, baseUrl, resolveSchema } = useOpenApiSpec(API_DOCS_URL);
   const [selectedEndpoint, setSelectedEndpoint] = useState<any>(null);
